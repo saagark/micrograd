@@ -56,6 +56,22 @@ class Value:
         out._backward = _backward
         return out
 
+    def log(self):
+      x = self.data
+      out = Value(log(x), (self, ), 'log')
+      def _backward():
+          self.grad += (1/x) * out.grad
+      out._backward = _backward
+      
+      return out
+
+    def tanh(self):
+        out = Value(math.tanh(self.data), (self,), 'tanh')
+        def _backward():
+            self.grad += (1 - out.data**2) * out.grad
+        out._backward = _backward
+        return out
+
     def backward(self):
         topo = []
         visited = set()
